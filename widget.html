@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Branch Visit Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a3e6f 0%, #2c5a8c 100%);
+            color: white;
+            padding: 30px 40px;
+            border-bottom: 4px solid #4da6ff;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            font-size: 32px;
+            color: #4da6ff;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* Content */
+        .content {
+            padding: 30px 40px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a3e6f;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        label i {
+            margin-right: 8px;
+            color: #4da6ff;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5eb;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #4da6ff;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(77, 166, 255, 0.1);
+        }
+
+        /* Multi-select specific styling */
+        select[multiple] {
+            height: auto;
+            min-height: 120px;
+            padding: 8px;
+            background-image: none;
+        }
+
+        select[multiple] option {
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin: 2px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        select[multiple] option:hover {
+            background: #e8f0fe;
+        }
+
+        select[multiple] option:checked {
+            background: #4da6ff linear-gradient(0deg, #4da6ff 0%, #4da6ff 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .multi-select-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .multi-select-hint i {
+            color: #4da6ff;
+            font-size: 12px;
+        }
+
+        /* Selected assistants chips */
+        .selected-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 8px 0;
+        }
+
+        .selected-chip {
+            background: linear-gradient(135deg, #e8f0fe 0%, #d4e4ff 100%);
+            color: #1a3e6f;
+            padding: 6px 14px 6px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #b8d4ff;
+            animation: chipIn 0.25s ease;
+        }
+
+        .selected-chip .chip-remove {
+            cursor: pointer;
+            color: #dc3545;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            line-height: 1;
+            padding: 0 2px;
+        }
+
+        .selected-chip .chip-remove:hover {
+            transform: scale(1.3);
+            color: #c82333;
+        }
+
+        @keyframes chipIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Section Cards */
+        .subform-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .subform-item:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .subform-header {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1a3e6f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .subform-header input {
+            font-size: 16px;
+            font-weight: 600;
+            background: white;
+            border: 1px solid #e1e5eb;
+        }
+
+        /* Section Number Badge */
+        .section-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #4da6ff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            display: inline-block;
+            margin: 8px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #e1e5eb;
+            transition: all 0.3s ease;
+        }
+
+        .image-preview img:hover {
+            transform: scale(1.05);
+            border-color: #4da6ff;
+        }
+
+        .remove-img {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            line-height: 24px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .remove-img:hover {
+            transform: scale(1.1);
+            background: #c82333;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn i {
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4da6ff 0%, #2196F3 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            padding: 14px 32px;
+            font-size: 16px;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid #4da6ff;
+            color: #4da6ff;
+        }
+
+        .btn-outline:hover {
+            background: #4da6ff;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        /* Loading Overlay */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            text-align: center;
+            padding-top: 20%;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            display: inline-block;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4da6ff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Image Container */
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            min-height: 80px;
+        }
+
+        /* File Input Styling */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border: 2px dashed #e1e5eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .file-input-label:hover {
+            border-color: #4da6ff;
+            background: #f0f7ff;
+            color: #4da6ff;
+        }
+
+        /* Select Dropdown */
+        select:not([multiple]) {
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234da6ff" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        /* Textarea */
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Toast Message */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            .header {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .button-group .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .subform-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .subform-header input {
+                width: 100% !important;
+            }
+            select[multiple] {
+                min-height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-clipboard-list"></i>
+                Branch Visit Report
+            </h1>
+            <p><i class="fas fa-store"></i> Complete the form below to submit your branch visit report</p>
+        </div>
+
+        <div class="content">
+            <!-- Basic Information -->
+            <div class="form-group">
+                <label><i class="fas fa-store"></i> Branch Name</label>
+                <select id="branchSelect">
+                    <option value="">Select Branch</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Visit Date</label>
+                <input type="date" id="visitDate">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-users"></i> Assistants</label>
+                <select id="assistantsSelect" multiple>
+                    <option value="محمد حازم">محمد حازم</option>
+                    <option value="محمد شلبي">محمد شلبي</option>
+                </select>
+                <div class="multi-select-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Hold <kbd>Ctrl</kbd> (Windows) or <kbd>Cmd</kbd> (Mac) to select multiple
+                </div>
+                <div id="selectedChips" class="selected-chips"></div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-sticky-note"></i> General Notes</label>
+                <textarea id="generalNotes" rows="3" placeholder="Enter any general observations or notes..."></textarea>
+            </div>
+
+            <!-- Dynamic Sections -->
+            <div style="margin: 30px 0 20px 0;">
+                <label><i class="fas fa-layer-group"></i> Visit Sections</label>
+            </div>
+            <div id="sectionsContainer"></div>
+
+            <div class="button-group">
+                <button class="btn btn-outline" onclick="addSection()">
+                    <i class="fas fa-plus"></i> Add New Section
+                </button>
+                <button class="btn btn-success" onclick="submitReport()">
+                    <i class="fas fa-paper-plane"></i> Submit Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p><i class="fas fa-sync-alt fa-spin"></i> Submitting report...</p>
+            <p style="font-size: 12px; margin-top: 10px; color: #666;">Please wait</p>
+        </div>
+    </div>
+
+    <script src="https://js.zohostatic.com/support/developer_sdk/v1/js/ZohoDeskClientSDK.min.js">
+    </script>
+    <script>
+        let sections = [];
+        let sectionCounter = 0;
+        let currentTicketID = null;
+        let currentUserEmail = null;
+        let storesMap = new Map();
+
+        // Initialize
+        window.onload = async function() {
+            await initZoho();
+            await loadBranches();
+            addSection();
+            setupMultiSelect();
+            setDefaultDate();
+        };
+
+        function setDefaultDate() {
+            const dateInput = document.getElementById('visitDate');
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+        }
+
+        function formatDate(purchaseDate) {
+            const date = new Date(purchaseDate);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function setupMultiSelect() {
+            const select = document.getElementById('assistantsSelect');
+            const chipsContainer = document.getElementById('selectedChips');
+
+            select.addEventListener('change', function() {
+                updateChips();
+            });
+
+            select.addEventListener('click', function() {
+                setTimeout(updateChips, 10);
+            });
+
+            updateChips();
+        }
+
+        function updateChips() {
+            const select = document.getElementById('assistantsSelect');
+            const chipsContainer = document.getElementById('selectedChips');
+            const selectedOptions = Array.from(select.selectedOptions);
+
+            chipsContainer.innerHTML = '';
+
+            if (selectedOptions.length === 0) {
+                const hint = document.createElement('span');
+                hint.style.cssText =
+                    'color: #aaa; font-size: 13px; font-style: italic; padding: 4px 0;';
+                hint.textContent = 'No assistants selected';
+                chipsContainer.appendChild(hint);
+                return;
+            }
+
+            selectedOptions.forEach(option => {
+                const chip = document.createElement('span');
+                chip.className = 'selected-chip';
+                chip.innerHTML = `
+                        ${option.value}
+                        <span class="chip-remove" data-value="${option.value}" title="Remove">×</span>
+                    `;
+                chip.querySelector('.chip-remove').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const value = this.dataset.value;
+                    const opt = select.querySelector(`option[value="${value}"]`);
+                    if (opt) {
+                        opt.selected = false;
+                        updateChips();
+                        select.dispatchEvent(new Event('change'));
+                    }
+                });
+                chipsContainer.appendChild(chip);
+            });
+        }
+
+        function getSelectedAssistants() {
+            const select = document.getElementById('assistantsSelect');
+            return Array.from(select.selectedOptions).map(opt => opt.value);
+        }
+
+        function clearAssistantsSelection() {
+            const select = document.getElementById('assistantsSelect');
+            for (let opt of select.options) {
+                opt.selected = false;
+            }
+            updateChips();
+        }
+
+        async function initZoho() {
+            if (typeof ZOHODESK !== 'undefined') {
+                await ZOHODESK.extension.onload();
+                const ticket = await ZOHODESK.get("ticket");
+                const user = await ZOHODESK.get("user");
+                currentTicketID = ticket.ticket.id;
+                currentUserEmail = user.user.email;
+                console.log("Ticket ID:", currentTicketID);
+                console.log("User Email:", currentUserEmail);
+            }
+        }
+
+        async function loadBranches() {
+            const requestObj = {
+                url: "https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/report/Stores_Area_Report_Report",
+                headers: { "Content-Type": "application/json" },
+                type: 'GET',
+                data: {
+                    max_records: 1000
+                },
+                postBody: {},
+                connectionLinkName: "creator"
+            };
+
+            try {
+                const response = await ZOHODESK.request(requestObj);
+                console.log(response);
+                let parsed = typeof response === 'string' ? JSON.parse(response) : response;
+
+                let paredData;
+                if (parsed.response) {
+                    const responseObj = JSON.parse(parsed.response);
+                    paredData = responseObj.statusMessage.data;
+                } else {
+                    paredData = parsed.statusMessage?.data || parsed.data;
+                }
+
+                const branchSelect = document.getElementById('branchSelect');
+                paredData.forEach(store => {
+                    const option = document.createElement('option');
+                    option.value = store.Store_Name;
+                    option.textContent = store.Store_Name;
+                    branchSelect.appendChild(option);
+                    storesMap.set(store.Store_Name, store.Store_Email_Contact);
+                });
+            } catch (error) {
+                console.error("Error loading branches:", error);
+            }
+        }
+
+        function addSection() {
+            sectionCounter++;
+            const uniqueKey = sectionCounter;
+
+            sections.push({
+                uniqueKey: uniqueKey,
+                sectionTitle: "",
+                prosText: "",
+                consText: "",
+                suggestionText: "",
+                sectionImages: []
+            });
+            renderSections();
+        }
+
+        function removeSection(uniqueKey) {
+            if (confirm('Are you sure you want to remove this section?')) {
+                sections = sections.filter(s => s.uniqueKey !== uniqueKey);
+                renderSections();
+            }
+        }
+
+        function updateSection(uniqueKey, field, value) {
+            const section = sections.find(s => s.uniqueKey === uniqueKey);
+            if (section) {
+                section[field] = value;
+            }
+        }
+
+        function handleImageUpload(uniqueKey, event) {
+            const files = event.target.files;
+            const section = sections.find(s => s.uniqueKey === uniqueKey);
+
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type.startsWith('image/')) {
+                    section.sectionImages.push(files[i]);
+                }
+            }
+            renderSections();
+        }
+
+        function removeImage(uniqueKey, imageIndex) {
+            const section = sections.find(s => s.uniqueKey === uniqueKey);
+            section.sectionImages.splice(imageIndex, 1);
+            renderSections();
+        }
+
+        function renderSections() {
+            const container = document.getElementById('sectionsContainer');
+            container.innerHTML = '';
+
+            sections.forEach((section, idx) => {
+                const div = document.createElement('div');
+                div.className = 'subform-item';
+                div.setAttribute('data-key', section.uniqueKey);
+                div.innerHTML = `
+                        <div class="section-badge">Section ${idx + 1}</div>
+                        <div class="subform-header">
+                            <input type="text" placeholder="Section Title (e.g., Store Cleanliness)" 
+                                   value="${escapeHtml(section.sectionTitle)}"
+                                   onchange="updateSection(${section.uniqueKey}, 'sectionTitle', this.value)"
+                                   style="width: 70%;">
+                            <button class="btn btn-danger" onclick="removeSection(${section.uniqueKey})" style="padding: 8px 16px;">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-thumbs-up"></i> Pros / Positives</label>
+                            <textarea rows="2" placeholder="What went well..." 
+                                      onchange="updateSection(${section.uniqueKey}, 'prosText', this.value)">${escapeHtml(section.prosText)}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-thumbs-down"></i> Cons / Negatives</label>
+                            <textarea rows="2" placeholder="What needs improvement..." 
+                                      onchange="updateSection(${section.uniqueKey}, 'consText', this.value)">${escapeHtml(section.consText)}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-lightbulb"></i> Suggestions</label>
+                            <textarea rows="2" placeholder="Recommendations..." 
+                                      onchange="updateSection(${section.uniqueKey}, 'suggestionText', this.value)">${escapeHtml(section.suggestionText)}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-camera"></i> Images</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" multiple accept="image/*" 
+                                       onchange="handleImageUpload(${section.uniqueKey}, event)" id="file-${section.uniqueKey}">
+                                <div class="file-input-label" onclick="document.getElementById('file-${section.uniqueKey}').click()">
+                                    <i class="fas fa-upload"></i> Click to upload images
+                                </div>
+                            </div>
+                            <div class="image-container" id="images-${section.uniqueKey}">
+                                ${section.sectionImages.map((img, idx) => `
+                                    <div class="image-preview">
+                                        <img src="${URL.createObjectURL(img)}" alt="${img.name}">
+                                        <div class="remove-img" onclick="removeImage(${section.uniqueKey}, ${idx})">×</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                container.appendChild(div);
+            });
+        }
+
+        function convertSectionsToCreatorFormat(sections) {
+            if (!sections || sections.length === 0) {
+                return [];
+            }
+
+            return sections.map(section => {
+                return {
+                    Item: section.sectionTitle || "",
+                    Pros: section.prosText || "",
+                    Cons: section.consText || "",
+                    Suggestion: section.suggestionText || "",
+                    Images1: ""
+                };
+            });
+        }
+
+        function buildDataToSend(branch, visitDateFormatted, assistantsArray, generalNotes) {
+            return {
+                "Branch_String": branch,
+                "Visit_Date": visitDateFormatted,
+                "Assistants": assistantsArray,
+                "Branch_Shortage": generalNotes,
+                "createdBy": currentUserEmail,
+                "ticketId": currentTicketID,
+                "SubForm": convertSectionsToCreatorFormat(sections)
+            };
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.style.background = type === 'success' ? '#28a745' : '#dc3545';
+            toast.innerHTML =
+                `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // async function submitReport() {
+        //     const branch = document.getElementById('branchSelect').value;
+        //     const visitDateRaw = document.getElementById('visitDate').value;
+        //     const assistantsArray = getSelectedAssistants();
+        //     const generalNotes = document.getElementById('generalNotes').value;
+
+        //     if (!branch) {
+        //         showToast("Please select a branch", 'error');
+        //         return;
+        //     }
+
+        //     if (!visitDateRaw) {
+        //         showToast("Please select a visit date", 'error');
+        //         return;
+        //     }
+
+        //     if (assistantsArray.length === 0) {
+        //         showToast("Please select at least one assistant", 'error');
+        //         return;
+        //     }
+
+        //     // Format the date
+        //     const visitDateFormatted = formatDate(visitDateRaw);
+
+        //     document.getElementById('loading').style.display = 'block';
+
+        //     try {
+        //         const uploadedImages = [];
+
+        //         for (let i = 0; i < sections.length; i++) {
+        //             const section = sections[i];
+        //             const sectionImages = [];
+
+        //             for (let j = 0; j < section.sectionImages.length; j++) {
+        //                 const file = section.sectionImages[j];
+        //                 const imageId = await uploadImageToTemp(file);
+        //                 sectionImages.push({
+        //                     id: imageId,
+        //                     name: file.name
+        //                 });
+        //             }
+
+        //             uploadedImages.push({
+        //                 sectionIndex: i,
+        //                 images: sectionImages
+        //             });
+        //         }
+
+        //         const subFormData = sections.map((section, idx) => {
+        //             const uploaded = uploadedImages.find(u => u.sectionIndex === idx);
+        //             return {
+        //                 Item: section.sectionTitle || "",
+        //                 Pros: section.prosText || "",
+        //                 Cons: section.consText || "",
+        //                 Suggestion: section.suggestionText || "",
+        //                 ImageIds: uploaded ? uploaded.images.map(img => img.id) : []
+        //             };
+        //         });
+
+        //         const dataToSend = {
+        //             "Branch_String": branch,
+        //             "Visit_Date": visitDateFormatted,
+        //             "Assistants": assistantsArray,
+        //             "Branch_Shortage": generalNotes,
+        //             "createdBy": currentUserEmail,
+        //             "ticketId": currentTicketID,
+        //             "SubForm": subFormData
+        //         };
+
+        //         const requestObj = {
+        //             url: "https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/form/Visit",
+        //             headers: { 'Content-Type': 'application/json' },
+        //             type: 'POST',
+        //             postBody: JSON.stringify({ data: dataToSend }),
+        //             connectionLinkName: "creator"
+        //         };
+
+        //         const response = await ZOHODESK.request(requestObj);
+        //         console.log("Success:", response);
+
+        //         showToast("Report submitted successfully!", 'success');
+        //         resetForm();
+
+        //     } catch (error) {
+        //         console.error("Error:", error);
+        //         showToast("Error submitting report: " + error.message, 'error');
+        //     } finally {
+        //         document.getElementById('loading').style.display = 'none';
+        //     }
+        // }
+
+		// async function uploadImageToSubformRecord(subRecordID, file, imageFieldLinkName) {
+		// 	try {
+		// 		const uploadObj = {
+		// 			url: `https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/report/All_Visits/${subRecordID}/${imageFieldLinkName}/upload`,
+		// 			type: "POST",
+		// 			data: {},
+		// 			postBody: {},
+		// 			headers: { "Content-Type": "multipart/form-data" },
+		// 			fileObj: [{ key: "file", file: file }],
+		// 			connectionLinkName: "creator"
+		// 		};
+
+		// 		let res = await ZOHODESK.request(uploadObj);
+		// 		console.log("Image", res);
+		// 		console.log(`Uploaded ${file.name} to subrecord ${subRecordID}:`, res);
+
+		// 		let parsed = typeof res === 'string' ? JSON.parse(res) : res;
+		// 		if (parsed.response) parsed = JSON.parse(parsed.response);
+		// 		return parsed;
+
+		// 	} catch (err) {
+		// 		console.error(`Failed to upload ${file.name}:`, err);
+		// 		throw err;
+		// 	}
+		// }
+
+		async function uploadImageToSubformRecord(parentRecordID, subRecordID, subformLinkName, imageFieldLinkName, file) {
+			try {
+				// Format the field name using dot notation: subformLinkName.imageFieldLinkName
+				const combinedFieldName = `${subformLinkName}.${imageFieldLinkName}`;
+				
+				const uploadObj = {
+					// Correct Zoho Creator v2.1 URL structure for subform file uploads
+					url: `https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/report/All_Visits/${parentRecordID}/${combinedFieldName}/${subRecordID}/upload`,
+					type: "POST",
+					data: {},
+					postBody: {},
+					headers: {
+						"Content-Type": "multipart/form-data"
+					},
+					fileObj: [{ key: "file", file: file }],
+					connectionLinkName: "creator" // Ensure this connection has Creator.report.UPDATE scope
+				};
+
+				let res = await ZOHODESK.request(uploadObj);
+				console.log(`Uploaded ${file.name} to subrecord ${subRecordID}:`, res);
+				
+				let parsed = typeof res === 'string' ? JSON.parse(res) : res;
+				if (parsed.response) parsed = JSON.parse(parsed.response);
+				
+				return parsed;
+			} catch (err) {
+				console.error(`Failed to upload ${file.name}:`, err);
+				throw err;
+			}
+		}
+		async function submitReport() {
+			const branch = document.getElementById('branchSelect').value;
+			const visitDateRaw = document.getElementById('visitDate').value;
+			const assistantsArray = getSelectedAssistants();
+			const generalNotes = document.getElementById('generalNotes').value;
+
+			if (!branch) { showToast("Please select a branch", 'error'); return; }
+			if (!visitDateRaw) { showToast("Please select a visit date", 'error'); return; }
+			if (assistantsArray.length === 0) { showToast("Please select at least one assistant", 'error'); return; }
+
+			const visitDateFormatted = formatDate(visitDateRaw);
+			document.getElementById('loading').style.display = 'block';
+
+			try {
+				// STEP 1: Build subform data WITHOUT images
+				const subFormData = sections.map(section => ({
+					Item: section.sectionTitle || "",
+					Pros: section.prosText || "",
+					Cons: section.consText || "",
+					Suggestion: section.suggestionText || ""
+					// No image field here — we upload after
+				}));
+
+				const dataToSend = {
+					"Branch_String": branch,
+					"Visit_Date": visitDateFormatted,
+					"Assistants": assistantsArray,
+					"Branch_Shortage": generalNotes,
+					"createdBy": currentUserEmail,
+					"ticketId": currentTicketID,
+					"SubForm": subFormData
+				};
+
+				// STEP 2: Create the Visit record
+				const createResponse = await ZOHODESK.request({
+					url: "https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/form/Visit",
+					headers: { 'Content-Type': 'application/json' },
+					type: 'POST',
+					postBody: JSON.stringify({ data: dataToSend }),
+					connectionLinkName: "creator"
+				});
+
+				const parsedResponse =
+					typeof createResponse === "string"
+						? JSON.parse(createResponse)
+						: createResponse;
+
+				console.log("Parsed response:", parsedResponse);
+
+				const responseData =
+					typeof parsedResponse.response === "string"
+						? JSON.parse(parsedResponse.response)
+						: parsedResponse.response;
+
+				console.log("Response data:", responseData);
+
+				const visitRecordID = responseData?.statusMessage?.data?.ID;
+				if (!visitRecordID) throw new Error("Could not get record ID after submit");
+
+				console.log("Visit Record ID:", visitRecordID);
+
+				// STEP 3: Fetch subform records to get their IDs
+				// Replace 'Visit_SubForm_Report' with your actual subform report link name
+				const subformResponse = await ZOHODESK.request({
+					url: `https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/report/All_Visits`,
+					headers: { 'Content-Type': 'application/json' },
+					type: 'GET',
+					data: { criteria: `ID == ${visitRecordID}` },
+					postBody: {},
+					connectionLinkName: "creator"
+				});
+
+				const subParsed =
+					typeof subformResponse === "string"
+						? JSON.parse(subformResponse)
+						: subformResponse;
+
+				console.log("Parsed response:", subParsed);
+
+				const subParsed2 =
+					typeof subParsed.response === "string"
+						? JSON.parse(subParsed.response)
+						: subParsed.response;
+
+				console.log("Response data:", subParsed2);
+
+				const subformRecords = subParsed2?.statusMessage?.data?.[0]?.SubForm;
+				console.log("subformRecords", subformRecords);
+
+				// let subParsed = typeof subformResponse === 'string' ? JSON.parse(subformResponse) : subformResponse;
+				// console.log("subParsed", subParsed);
+				// if (subParsed.response) subParsed = JSON.parse(subParsed.response);
+				// console.log("subParsed.response",subParsed.response);
+				// const subformRecords = subParsed.data || subParsed.statusMessage?.data || [];
+				// console.log("subformRecords", subformRecords);
+
+
+				// STEP 4: Upload images for each section
+				// Replace 'Images1' with your actual image field link name
+				// Replace 'Visit_SubForm_Report' with actual subform report link name
+				for (let i = 0; i < sections.length; i++) {
+					const section = sections[i];
+					if (!section.sectionImages || section.sectionImages.length === 0) continue;
+
+					const subRecord = subformRecords[i]; // assumes same order
+					if (!subRecord) continue;
+					const subRecordID = subRecord.ID;
+
+					for (const file of section.sectionImages) {
+						// await uploadImageToSubformRecord(subRecordID, file, 'Images1');
+						await uploadImageToSubformRecord(visitRecordID, subRecordID, "SubForm", "Images1", file);
+					}
+				}
+
+				showToast("Report submitted successfully!", 'success');
+				resetForm();
+
+			} 
+			 finally {
+				document.getElementById('loading').style.display = 'none';
+			}
+			// catch (error) {
+			// 	console.error("Error:", error);
+			// 	showToast("Error: " + error.message, 'error');
+			// } finally {
+			// 	document.getElementById('loading').style.display = 'none';
+			// }
+		}
+
+        async function uploadImageToTemp(file) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const requestObj = {
+                    url: "https://www.zohoapis.com/creator/v2.1/data/towngroup/fashion-visit/form/Photos",
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    type: 'POST',
+                    postBody: formData,
+                    connectionLinkName: "creator"
+                };
+
+                ZOHODESK.request(requestObj).then(res => {
+                    let parsed = typeof res === 'string' ? JSON.parse(res) : res;
+                    let imageId = parsed.data?.ID || parsed.ID;
+                    resolve(imageId);
+                }).catch(reject);
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('branchSelect').value = '';
+            setDefaultDate();
+            clearAssistantsSelection();
+            document.getElementById('generalNotes').value = '';
+            sections = [];
+            sectionCounter = 0;
+            addSection();
+            renderSections();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+    </script>
+</body>
+
+</html>
